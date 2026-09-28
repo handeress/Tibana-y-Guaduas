@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Obra Tibaná y Guaduas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F2F3EF; --surface:#FFFFFF; --ink:#1D2622; --muted:#5E6B64; --line:#D9DDD6;
+  --paid:#3F6B4F; --pend:#B5782F; --free:#C9D0C8; --soft:#E7EBE4;
+  --display:"Epilogue", "Helvetica Neue", Arial, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", Roboto, Arial, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#131A17; --surface:#1B2420; --ink:#E6EBE7; --muted:#9AA8A0; --line:#2E3A34;
+    --paid:#6FA383; --pend:#D69B52; --free:#3A4640; --soft:#222C27;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#131A17; --surface:#1B2420; --ink:#E6EBE7; --muted:#9AA8A0; --line:#2E3A34;
+  --paid:#6FA383; --pend:#D69B52; --free:#3A4640; --soft:#222C27;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:880px;margin:0 auto;padding-inline:20px;padding-block:36px 56px;display:flex;flex-direction:column;gap:40px}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,6vw,46px);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+h2{font-size:20px;font-weight:700}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header{display:flex;flex-direction:column;gap:10px}
+header p{margin:0;color:var(--muted);max-width:60ch}
+
+.budget{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:20px}
+.budget-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px}
+.budget-top .big{font-family:var(--display);font-weight:800;font-size:clamp(26px,5vw,34px)}
+.bar{display:flex;height:22px;border-radius:4px;overflow:hidden;background:var(--free)}
+.bar span{display:block;height:100%}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
+.legend div{display:flex;flex-direction:column;gap:2px}
+.legend .k{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.legend .k i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.legend .v{font-size:18px;font-weight:500}
+.legend .p{font-size:12px;color:var(--muted)}
+
+section{display:flex;flex-direction:column;gap:14px}
+section > p.note{margin:0;color:var(--muted);font-size:13px}
+.cats{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.cat{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.cat .name{font-weight:600}
+.cat .amt{text-align:right}
+.cat .mini{grid-column:1/-1;display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--soft)}
+.cat .mini span{display:block;height:100%}
+.cat .sub{grid-column:1/-1;font-size:13px;color:var(--muted)}
+
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--soft)}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right;white-space:nowrap}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.pill.ok{background:color-mix(in srgb,var(--paid) 16%,transparent);color:var(--paid)}
+.pill.pe{background:color-mix(in srgb,var(--pend) 18%,transparent);color:var(--pend)}
+.detail{color:var(--muted);font-size:13px}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
+
+<main class="wrap">
+  <header>
+    <span class="eyebrow">Proyecto · Tibaná y Guaduas</span>
+    <h1>Estado de cuentas de la obra</h1>
+    <p>Resumen del presupuesto y de las compras registradas para el proyecto. Corte de revisión: <strong>27 de septiembre de 2026</strong>. Valores en pesos colombianos.</p>
+  </header>
+
+  <div class="budget" aria-label="Ejecución del presupuesto">
+    <div class="budget-top">
+      <span class="eyebrow">Presupuesto acordado</span>
+      <span class="big num">$ 42.000.000</span>
+    </div>
+    <div class="bar" role="img" aria-label="Pagado 48,3 %, comprometido por pagar 2,9 %, disponible 48,8 %">
+      <span style="width:48.33%;background:var(--paid)"></span>
+      <span style="width:2.88%;background:var(--pend)"></span>
+    </div>
+    <div class="legend">
+      <div><span class="k"><i style="background:var(--paid)"></i>Pagado</span><span class="v num">$ 20.297.161</span><span class="p">48,3 % del presupuesto</span></div>
+      <div><span class="k"><i style="background:var(--pend)"></i>Comprometido por pagar</span><span class="v num">$ 1.208.770</span><span class="p">Saldos de 3 compras</span></div>
+      <div><span class="k"><i style="background:var(--free)"></i>Disponible</span><span class="v num">$ 20.494.069</span><span class="p">48,8 % del presupuesto</span></div>
+    </div>
+  </div>
+
+  <section>
+    <h2>Compras por frente de obra</h2>
+    <div class="cats" id="cats"></div>
+  </section>
+
+  <section>
+    <h2>Detalle de compras y pagos</h2>
+    <p class="note">12 compras registradas. Total contratado: <span class="num">$ 21.505.931</span>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fecha</th><th>Concepto</th><th>Proveedor</th><th class="r">Valor</th><th class="r">Pagado</th><th>Estado</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>Este resumen muestra únicamente la información del proyecto Tibaná y Guaduas. Los saldos pendientes corresponden a compras ya acordadas con proveedores. Adicionales, avance de obra y fotografías se publicarán en esta misma página.</footer>
+</main>
+
+<script>
+const fmt = n => "$ " + n.toLocaleString("es-CO");
+const compras = [
+  {f:"29/08/2026", c:"Cubierta en policarbonato y columnas de pérgola", p:"ARKOS", t:4995199, pg:4995199, cat:"Cubierta y pérgola"},
+  {f:"30/08/2026", c:"Sanitarios, grifería, tejas, placas de fibrocemento y tanque séptico", p:"Homecenter", t:4490000, pg:4490000, cat:"Baños, cocina y obra gris"},
+  {f:"23/09/2026", c:"Electricidad e iluminación", p:"Colmuebles SAS", t:1356600, pg:1356600, cat:"Electricidad e iluminación"},
+  {f:"24/09/2026", c:"Madera para puertas", p:"Asemaderas Boyacá", t:948000, pg:948000, cat:"Carpintería y madera"},
+  {f:"24/09/2026", c:"Paneles de flor morado para cerramientos interiores", p:"Eterna Corporation", t:2400000, pg:2400000, cat:"Carpintería y madera"},
+  {f:"25/09/2026", c:"Molduras de teca para marcos de ventana", p:"Rodolfo Reyes", t:358500, pg:300000, cat:"Carpintería y madera"},
+  {f:"25/09/2026", c:"Teca para marcos (4 m²)", p:"Sandra Castro", t:460000, pg:460000, cat:"Carpintería y madera"},
+  {f:"25/09/2026", c:"Estufa de empotrar a gas", p:"Estufas Continental", t:481900, pg:481900, cat:"Baños, cocina y obra gris"},
+  {f:"26/09/2026", c:"Materiales para fabricación de muebles", p:"El Triángulo Group", t:1402500, pg:1402500, cat:"Muebles"},
+  {f:"26/09/2026", c:"Tableros y cantos para muebles y paneles interiores", p:"Disalco", t:2309632, pg:2309362, cat:"Muebles"},
+  {f:"26/09/2026", c:"Teca para paredes, pisos y techo (machimbre y deck)", p:"Gustavo Castro", t:2150000, pg:1000000, cat:"Carpintería y madera"},
+  {f:"26/09/2026", c:"Perfilería metálica", p:"Hierros Bogotá", t:153600, pg:153600, cat:"Metal"}
+];
+
+const rows = document.getElementById("rows");
+compras.forEach(x=>{
+  const saldo = x.t - x.pg;
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td class="num">${x.f}</td><td>${x.c}</td><td class="detail">${x.p}</td>
+    <td class="r num">${fmt(x.t)}</td><td class="r num">${fmt(x.pg)}</td>
+    <td>${saldo>0?`<span class="pill pe">Saldo ${fmt(saldo)}</span>`:`<span class="pill ok">Pagado</span>`}</td>`;
+  rows.appendChild(tr);
+});
+
+const groups = {};
+compras.forEach(x=>{
+  const g = groups[x.cat] ||= {t:0,pg:0,n:0};
+  g.t+=x.t; g.pg+=x.pg; g.n++;
+});
+const max = Math.max(...Object.values(groups).map(g=>g.t));
+const cats = document.getElementById("cats");
+Object.entries(groups).sort((a,b)=>b[1].t-a[1].t).forEach(([name,g])=>{
+  const saldo = g.t-g.pg;
+  const d = document.createElement("div");
+  d.className="cat";
+  d.innerHTML = `<span class="name">${name}</span><span class="amt num">${fmt(g.t)}</span>
+    <span class="mini" style="width:${(g.t/max*100).toFixed(1)}%"><span style="width:${(g.pg/g.t*100).toFixed(1)}%;background:var(--paid)"></span><span style="width:${(saldo/g.t*100).toFixed(1)}%;background:var(--pend)"></span></span>
+    <span class="sub">${g.n} ${g.n===1?"compra":"compras"} · ${saldo>0?`pagado ${fmt(g.pg)}, saldo ${fmt(saldo)}`:"pagado en su totalidad"}</span>`;
+  cats.appendChild(d);
+});
+</script>
+
+</body>
+</html>
