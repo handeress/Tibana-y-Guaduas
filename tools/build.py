@@ -52,6 +52,9 @@ for c in sorted(d["compras"], key=lambda x: (x["fecha"], x["id"])):
 data = {"corte": d["corte"], "presupuesto": d.get("presupuesto"), "compras": compras}
 if d.get("presupuestoDetalle"):
     data["presupuestoDetalle"] = d["presupuestoDetalle"]
+for k in ("ingresos", "avance"):
+    if d.get(k):
+        data[k] = d[k]
 tpl = (root / "tools" / "template.html").read_text(encoding="utf-8")
 out = tpl.replace("__PROYECTO__", PROYECTO).replace("__DATA__", json.dumps(data, ensure_ascii=False).replace("</", "<\\/"))
 (root / "index.html").write_text(out, encoding="utf-8")
