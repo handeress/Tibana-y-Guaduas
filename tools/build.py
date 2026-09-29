@@ -12,6 +12,7 @@ import json, sys, pathlib
 FRENTES = {
     "Cubiertas y pérgolas": "Cubierta y pérgola",
     "Materiales": "Baños, cocina y obra gris",
+    "Otros gastos": "Otros",
     "Estufas": "Baños, cocina y obra gris",
     "Electricidad e iluminación": "Electricidad e iluminación",
     "Madera": "Carpintería y madera",
@@ -23,6 +24,11 @@ FRENTES = {
 
 root = pathlib.Path(__file__).resolve().parent.parent
 d = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
+PROYECTO = "Tibaná y Guaduas"
+# Solo se publica este proyecto; las compras sin campo proyecto pertenecen a él.
+d["compras"] = [c for c in d["compras"] if c.get("proyecto", PROYECTO) == PROYECTO]
+ids = {c["id"] for c in d["compras"]}
+d["pagos"] = [p for p in d["pagos"] if p["compraId"] in ids]
 pagado = {}
 for p in d["pagos"]:
     pagado[p["compraId"]] = pagado.get(p["compraId"], 0) + p["valor"]
