@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Obra Tibaná y Guaduas</title>
+<title>Obra __PROYECTO__</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -70,6 +70,7 @@ td.r,th.r{text-align:right;white-space:nowrap}
 .pill.pe{background:color-mix(in srgb,var(--pend) 18%,transparent);color:var(--pend)}
 .detail{color:var(--muted);font-size:13px}
 footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+[hidden]{display:none!important}
 </style>
 <style>body{margin:0}</style>
 </head>
@@ -77,21 +78,21 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
 
 <main class="wrap">
   <header>
-    <span class="eyebrow">Proyecto · Tibaná y Guaduas</span>
+    <span class="eyebrow">Proyecto · __PROYECTO__</span>
     <h1>Estado de cuentas de la obra</h1>
     <p>Resumen del presupuesto y de las compras registradas para el proyecto. Corte de revisión: <strong id="corte">—</strong>. Valores en pesos colombianos.</p>
   </header>
 
   <div class="budget" aria-label="Ejecución del presupuesto">
     <div class="budget-top">
-      <span class="eyebrow">Presupuesto acordado</span>
+      <span class="eyebrow" id="presLbl">Presupuesto acordado</span>
       <span class="big num" id="pres">—</span>
     </div>
     <div class="bar" role="img" id="bar"><span id="barP" style="background:var(--paid)"></span><span id="barS" style="background:var(--pend)"></span></div>
     <div class="legend">
       <div><span class="k"><i style="background:var(--paid)"></i>Pagado</span><span class="v num" id="vPag">—</span><span class="p" id="pPag"></span></div>
       <div><span class="k"><i style="background:var(--pend)"></i>Comprometido por pagar</span><span class="v num" id="vSal">—</span><span class="p" id="pSal"></span></div>
-      <div><span class="k"><i style="background:var(--free)"></i>Disponible</span><span class="v num" id="vDis">—</span><span class="p" id="pDis"></span></div>
+      <div id="disBox"><span class="k"><i style="background:var(--free)"></i>Disponible</span><span class="v num" id="vDis">—</span><span class="p" id="pDis"></span></div>
     </div>
   </div>
 
@@ -120,17 +121,20 @@ const compras = DATA.compras;
 
 const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
 (function(){
-  const pres=DATA.presupuesto, pag=compras.reduce((a,x)=>a+x.pg,0), cont=compras.reduce((a,x)=>a+x.t,0);
+  const conPres=!!DATA.presupuesto;
+  const pres=DATA.presupuesto||compras.reduce((a,x)=>a+x.t,0)||1, pag=compras.reduce((a,x)=>a+x.pg,0), cont=compras.reduce((a,x)=>a+x.t,0);
   const conSaldo=compras.filter(x=>x.t>x.pg), sal=conSaldo.reduce((a,x)=>a+x.t-x.pg,0), dis=pres-cont;
   const [y,m,d]=DATA.corte.split("-");
   document.getElementById("corte").textContent=new Date(+y,m-1,+d).toLocaleDateString("es-CO",{day:"numeric",month:"long",year:"numeric"});
-  document.getElementById("pres").textContent=fmt(pres);
+  document.getElementById("pres").textContent=fmt(conPres?pres:cont);
+  if(!conPres){document.getElementById("presLbl").textContent="Total contratado";document.getElementById("disBox").hidden=true;}
+  const base=conPres?" del presupuesto":" de lo contratado";
   document.getElementById("barP").style.width=(pag/pres*100)+"%";
   document.getElementById("barS").style.width=(sal/pres*100)+"%";
-  document.getElementById("bar").setAttribute("aria-label",`Pagado ${pct(pag/pres)}, comprometido por pagar ${pct(sal/pres)}, disponible ${pct(dis/pres)}`);
-  document.getElementById("vPag").textContent=fmt(pag); document.getElementById("pPag").textContent=pct(pag/pres)+" del presupuesto";
+  document.getElementById("bar").setAttribute("aria-label",conPres?`Pagado ${pct(pag/pres)}, comprometido por pagar ${pct(sal/pres)}, disponible ${pct(dis/pres)}`:`Pagado ${pct(pag/pres)}, por pagar ${pct(sal/pres)}`);
+  document.getElementById("vPag").textContent=fmt(pag); document.getElementById("pPag").textContent=pct(pag/pres)+base;
   document.getElementById("vSal").textContent=fmt(sal); document.getElementById("pSal").textContent=conSaldo.length?`Saldos de ${conSaldo.length} ${conSaldo.length===1?"compra":"compras"}`:"Sin saldos pendientes";
-  document.getElementById("vDis").textContent=fmt(dis); document.getElementById("pDis").textContent=pct(dis/pres)+" del presupuesto";
+  document.getElementById("vDis").textContent=fmt(dis); document.getElementById("pDis").textContent=pct(dis/pres)+base;
   document.getElementById("nota").innerHTML=`${compras.length} compras registradas. Total contratado: <span class="num">${fmt(cont)}</span>.`;
 })();
 
