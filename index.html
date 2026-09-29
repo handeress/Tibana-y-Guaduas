@@ -191,11 +191,12 @@ const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
   document.getElementById("avTot").textContent=rep.length?f1(tot):"Por reportar";
   document.getElementById("avBarP").style.width=tot+"%";
   document.getElementById("avBar").setAttribute("aria-label","Avance general "+f1(tot));
-  document.getElementById("avNota").textContent=(rep.length?"Ponderado según el valor de cada capítulo del presupuesto. ":"")+(av.actualizado?"Actualizado: "+av.actualizado.split("-").reverse().join("/")+".":"");
+  const ej=caps.reduce((a,c)=>a+c.valor*((c.avance||0)/100),0);
+  document.getElementById("avNota").textContent=(rep.length?`Ejecutado ${fmt(ej)} de ${fmt(tv)}, ponderado según el valor de cada capítulo del presupuesto. `:"")+(av.actualizado?"Actualizado: "+av.actualizado.split("-").reverse().join("/")+".":"");
   document.getElementById("avDet").innerHTML=caps.map(c=>{const v=c.avance;const done=v===100;
     return `<div class="cat"><span class="name">${esc(c.n)}</span><span class="amt num">${v===null||v===undefined?'<span class="tag">Por reportar</span>':f1(v)}</span>
     <span class="mini" style="width:100%"><span style="width:${v||0}%;background:var(--paid)"></span></span>
-    ${c.nota?`<span class="sub">${done?"Completado · ":""}${esc(c.nota)}</span>`:done?'<span class="sub">Completado</span>':""}</div>`}).join("");
+    <span class="sub"><span class="num">Valor ${fmt(c.valor)} · Ejecutado ${fmt(c.valor*(v||0)/100)}</span>${done?" · Completado":""}${c.nota?`<br>${esc(c.nota)}`:""}</span></div>`}).join("");
   document.getElementById("avSec").hidden=false;
 })();
 (function(){
