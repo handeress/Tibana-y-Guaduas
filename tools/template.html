@@ -96,6 +96,11 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
     </div>
   </div>
 
+  <section id="presSec" hidden>
+    <h2>Presupuesto y adicionales</h2>
+    <div class="cats" id="presDet"></div>
+  </section>
+
   <section>
     <h2>Compras por frente de obra</h2>
     <div class="cats" id="cats"></div>
@@ -136,6 +141,16 @@ const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
   document.getElementById("vSal").textContent=fmt(sal); document.getElementById("pSal").textContent=conSaldo.length?`Saldos de ${conSaldo.length} ${conSaldo.length===1?"compra":"compras"}`:"Sin saldos pendientes";
   document.getElementById("vDis").textContent=fmt(dis); document.getElementById("pDis").textContent=pct(dis/pres)+base;
   document.getElementById("nota").innerHTML=`${compras.length} compras registradas. Total contratado: <span class="num">${fmt(cont)}</span>.`;
+})();
+
+(function(){
+  const pd=DATA.presupuestoDetalle; if(!pd) return;
+  const line=(n,v,sub)=>`<div class="cat"><span class="name"${sub?' style="font-weight:400"':''}>${esc(n)}</span><span class="amt num">${fmt(v)}</span></div>`;
+  let h=line("Presupuesto base",pd.base)+line("Transporte",pd.transporte||0);
+  const ad=pd.adiciones||[]; const tAd=ad.reduce((a,x)=>a+x.valor,0);
+  if(ad.length){h+=`<div class="cat"><span class="name">Adicionales</span><span class="amt num">${fmt(tAd)}</span><span class="sub">${ad.map(x=>`${esc(x.concepto)}: ${fmt(x.valor)}`).join(" · ")}</span></div>`;}
+  h+=`<div class="cat"><span class="name">Total presupuesto</span><span class="amt num"><strong>${fmt(pd.base+(pd.transporte||0)+tAd)}</strong></span></div>`;
+  document.getElementById("presDet").innerHTML=h; document.getElementById("presSec").hidden=false;
 })();
 
 const rows = document.getElementById("rows");
