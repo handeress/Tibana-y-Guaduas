@@ -75,6 +75,11 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
 .prog .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .prog .pc{font-family:var(--display);font-weight:800;font-size:clamp(26px,5vw,34px)}
 .tag{font-size:12px;color:var(--muted)}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.gal figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.gal a{display:block}
+.gal img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.gal figcaption{padding:8px 10px;font-size:13px;color:var(--muted)}
 </style>
 <style>body{margin:0}</style>
 </head>
@@ -108,6 +113,11 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
       <span class="tag" id="avNota"></span>
     </div>
     <div class="cats" id="avDet"></div>
+  </section>
+
+  <section id="galSec" hidden>
+    <h2>Fotos de la obra</h2>
+    <div class="gal" id="gal"></div>
   </section>
 
   <section id="ingSec" hidden>
@@ -187,6 +197,11 @@ const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
     <span class="mini" style="width:100%"><span style="width:${v||0}%;background:var(--paid)"></span></span>
     ${c.nota?`<span class="sub">${done?"Completado · ":""}${esc(c.nota)}</span>`:done?'<span class="sub">Completado</span>':""}</div>`}).join("");
   document.getElementById("avSec").hidden=false;
+})();
+(function(){
+  const f=DATA.fotos; if(!f||!f.length) return;
+  document.getElementById("gal").innerHTML=[...f].sort((a,b)=>(b.fecha||"").localeCompare(a.fecha||"")).map(x=>`<figure><a href="${esc(x.src)}" target="_blank" rel="noopener"><img src="${esc(x.src)}" alt="${esc(x.desc)}" loading="lazy"></a><figcaption>${x.fecha?x.fecha.split("-").reverse().join("/")+" · ":""}${esc(x.desc)}</figcaption></figure>`).join("");
+  document.getElementById("galSec").hidden=false;
 })();
 (function(){
   const ing=DATA.ingresos; if(!ing||!ing.length) return;
