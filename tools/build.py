@@ -55,6 +55,9 @@ if d.get("presupuestoDetalle"):
 for k in ("ingresos", "avance", "fotos"):
     if d.get(k):
         data[k] = d[k]
+# Del dinero entregado solo se publica concepto, fecha, valor y nota (nunca referencias ni soportes).
+if data.get("ingresos"):
+    data["ingresos"] = [{k: x.get(k, "") for k in ("n", "fecha", "valor", "nota")} for x in data["ingresos"]]
 tpl = (root / "tools" / "template.html").read_text(encoding="utf-8")
 out = tpl.replace("__PROYECTO__", PROYECTO).replace("__DATA__", json.dumps(data, ensure_ascii=False).replace("</", "<\\/"))
 (root / "index.html").write_text(out, encoding="utf-8")
