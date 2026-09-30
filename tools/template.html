@@ -89,10 +89,10 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
   <header>
     <span class="eyebrow">Proyecto · __PROYECTO__</span>
     <h1>Estado de cuentas de la obra</h1>
-    <p>Resumen del presupuesto y de las compras registradas para el proyecto. Corte de revisión: <strong id="corte">—</strong>. Valores en pesos colombianos.</p>
+    <p id="intro">Resumen del presupuesto y de las compras registradas para el proyecto. Corte de revisión: <strong id="corte">—</strong>. Valores en pesos colombianos.</p>
   </header>
 
-  <div class="budget" aria-label="Ejecución del presupuesto">
+  <div class="budget" id="budgetBox" aria-label="Ejecución del presupuesto">
     <div class="budget-top">
       <span class="eyebrow" id="presLbl">Presupuesto acordado</span>
       <span class="big num" id="pres">—</span>
@@ -130,12 +130,12 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
     <div class="cats" id="presDet"></div>
   </section>
 
-  <section>
+  <section id="secCats">
     <h2>Compras por frente de obra</h2>
     <div class="cats" id="cats"></div>
   </section>
 
-  <section>
+  <section id="secCompras">
     <h2>Detalle de compras y pagos</h2>
     <p class="note" id="nota"></p>
     <div class="table-wrap">
@@ -160,6 +160,11 @@ const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
   const conSaldo=compras.filter(x=>x.t>x.pg), sal=conSaldo.reduce((a,x)=>a+x.t-x.pg,0), dis=pres-cont;
   const [y,m,d]=DATA.corte.split("-");
   document.getElementById("corte").textContent=new Date(+y,m-1,+d).toLocaleDateString("es-CO",{day:"numeric",month:"long",year:"numeric"});
+  if(!compras.length){
+    ["budgetBox","secCats","secCompras"].forEach(i=>document.getElementById(i).hidden=true);
+    document.getElementById("intro").firstChild.textContent="Resumen del presupuesto, el avance y los pagos del proyecto. Corte de revisión: ";
+    return;
+  }
   document.getElementById("pres").textContent=fmt(conPres?pres:cont);
   if(!conPres){document.getElementById("presLbl").textContent="Total contratado";document.getElementById("disBox").hidden=true;}
   const base=conPres?" del presupuesto":" de lo contratado";
@@ -175,6 +180,11 @@ const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
 (function(){
   const pd=DATA.presupuestoDetalle; if(!pd) return;
   const line=(n,v,sub)=>`<div class="cat"><span class="name"${sub?' style="font-weight:400"':''}>${esc(n)}</span><span class="amt num">${fmt(v)}</span></div>`;
+  if(pd.lineas){
+    const t=pd.lineas.reduce((a,x)=>a+x.valor,0);
+    document.getElementById("presDet").innerHTML=pd.lineas.map(x=>`<div class="cat"><span class="name">${esc(x.n)}</span><span class="amt num">${fmt(x.valor)}</span>${x.nota?`<span class="sub">${esc(x.nota)}</span>`:""}</div>`).join("")+`<div class="cat"><span class="name">Total presupuesto</span><span class="amt num"><strong>${fmt(t)}</strong></span></div>`;
+    document.getElementById("presSec").hidden=false; return;
+  }
   let h=line("Presupuesto base",pd.base)+line("Transporte",pd.transporte||0);
   const ad=pd.adiciones||[]; const tAd=ad.reduce((a,x)=>a+x.valor,0);
   if(ad.length){h+=`<div class="cat"><span class="name">Adicionales</span><span class="amt num">${fmt(tAd)}</span><span class="sub">${ad.map(x=>`${esc(x.concepto)}: ${fmt(x.valor)}`).join(" · ")}</span></div>`;}
