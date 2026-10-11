@@ -180,7 +180,7 @@ const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
     const cell=(lbl,sw,v,sub)=>`<div><span class="k">${sw?`<i style="background:var(${sw})"></i>`:""}${lbl}</span><span class="v num">${fmt(v)}</span><span class="p">${sub}</span></div>`;
     document.querySelector("#budgetBox .legend").innerHTML=
       cell("Total entregado","",ent,conPres?pct(ent/pres)+base:"")+
-      cell("Disponible","",en.disponible,"Entregado y aún no gastado")+
+      cell("Disponible","",pres-ent,conPres?pct((pres-ent)/pres)+base+" por entregar":"")+
       cell("Total pagado","--paid",pag,pct(pag/pres)+base)+
       cell("Pendientes por pagar","--pend",sal,conSaldo.length?`Saldos de ${conSaldo.length} ${conSaldo.length===1?"compra":"compras"}`:"Sin saldos pendientes");
   }
