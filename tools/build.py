@@ -52,7 +52,7 @@ for c in sorted(d["compras"], key=lambda x: (x["fecha"], x["id"])):
 data = {"corte": d["corte"], "presupuesto": d.get("presupuesto"), "compras": compras}
 if d.get("presupuestoDetalle"):
     data["presupuestoDetalle"] = d["presupuestoDetalle"]
-for k in ("ingresos", "avance", "fotos"):
+for k in ("ingresos", "avance", "fotos", "entregado"):
     if d.get(k):
         data[k] = d[k]
 # Del dinero entregado solo se publica concepto, fecha, valor y nota (nunca referencias ni soportes).

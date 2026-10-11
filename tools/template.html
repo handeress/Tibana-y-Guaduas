@@ -215,10 +215,17 @@ const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
   document.getElementById("galSec").hidden=false;
 })();
 (function(){
-  const ing=DATA.ingresos; if(!ing||!ing.length) return;
-  const t=ing.reduce((a,x)=>a+x.valor,0), pres=DATA.presupuesto||0;
-  let h=ing.map(x=>`<div class="cat"><span class="name">${esc(x.n)}</span><span class="amt num">${fmt(x.valor)}</span>${x.fecha||x.nota?`<span class="sub">${x.fecha?x.fecha.split("-").reverse().join("/"):""}${x.fecha&&x.nota?" · ":""}${esc(x.nota||"")}</span>`:""}</div>`).join("");
-  h+=`<div class="cat"><span class="name">Total entregado</span><span class="amt num"><strong>${fmt(t)}</strong></span>${pres?`<span class="sub">${(t/pres*100).toLocaleString("es-CO",{maximumFractionDigits:1})} % del presupuesto · saldo por entregar ${fmt(pres-t)}</span>`:""}</div>`;
+  const ing=DATA.ingresos||[], en=DATA.entregado||{}; if(!ing.length&&!en.directas) return;
+  const pres=DATA.presupuesto||0, f=d=>d?d.split("-").reverse().join("/"):"";
+  const row=(n,v,sub,cls)=>`<div class="cat${cls?" "+cls:""}"><span class="name">${n}</span><span class="amt num">${v}</span>${sub?`<span class="sub">${sub}</span>`:""}</div>`;
+  let h="", t=0;
+  if(en.directas){ t+=en.directas; h+=row("Compras directas",fmt(en.directas),"Pagos hechos directamente por el contratante"); }
+  if(ing.length){
+    h+=`<div class="cat"><span class="name"><strong>Giros para compras</strong></span></div>`;
+    ing.forEach((x,i)=>{ t+=x.valor; h+=row(`Giro ${i+1}`,fmt(x.valor),[f(x.fecha),esc(x.nota||"")].filter(Boolean).join(" · ")); });
+  }
+  h+=row("<strong>Total entregado</strong>",`<strong>${fmt(t)}</strong>`,pres?`${(t/pres*100).toLocaleString("es-CO",{maximumFractionDigits:1})} % del presupuesto · saldo por entregar ${fmt(pres-t)}`:"");
+  if(en.disponible!==undefined&&en.disponible!==null) h+=row("Disponible",fmt(en.disponible),"Entregado y aún no gastado");
   document.getElementById("ingDet").innerHTML=h; document.getElementById("ingSec").hidden=false;
 })();
 
