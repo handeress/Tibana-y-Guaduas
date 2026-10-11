@@ -174,6 +174,16 @@ const pct=v=>(v*100).toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
   document.getElementById("vPag").textContent=fmt(pag); document.getElementById("pPag").textContent=pct(pag/pres)+base;
   document.getElementById("vSal").textContent=fmt(sal); document.getElementById("pSal").textContent=conSaldo.length?`Saldos de ${conSaldo.length} ${conSaldo.length===1?"compra":"compras"}`:"Sin saldos pendientes";
   document.getElementById("vDis").textContent=fmt(dis); document.getElementById("pDis").textContent=pct(dis/pres)+base;
+  const en=DATA.entregado;
+  if(en&&en.disponible!==undefined&&en.disponible!==null){
+    const ent=(en.directas||0)+(DATA.ingresos||[]).reduce((a,x)=>a+x.valor,0);
+    const cell=(lbl,sw,v,sub)=>`<div><span class="k">${sw?`<i style="background:var(${sw})"></i>`:""}${lbl}</span><span class="v num">${fmt(v)}</span><span class="p">${sub}</span></div>`;
+    document.querySelector("#budgetBox .legend").innerHTML=
+      cell("Total entregado","",ent,conPres?pct(ent/pres)+base:"")+
+      cell("Disponible","",en.disponible,"Entregado y aún no gastado")+
+      cell("Total pagado","--paid",pag,pct(pag/pres)+base)+
+      cell("Pendientes por pagar","--pend",sal,conSaldo.length?`Saldos de ${conSaldo.length} ${conSaldo.length===1?"compra":"compras"}`:"Sin saldos pendientes");
+  }
   document.getElementById("nota").innerHTML=`${compras.length} compras registradas. Total contratado: <span class="num">${fmt(cont)}</span>.`;
 })();
 
